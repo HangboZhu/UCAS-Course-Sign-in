@@ -39,7 +39,7 @@ const UCAS_LOGIN_URL = "https://iclass.ucas.edu.cn:8181/app/user/login.action";
 const UCAS_SIGN_URL = "https://iclass.ucas.edu.cn:8181/app/course/stu_scan_sign.action";
 const UCAS_LOGIN_UA = "student_5.0.1.2_android_12_20__110000";
 const UCAS_API_UA = "student_5.0.1.2_android_12_20_100000000000000_110000";
-const SIGN_TIMESTAMP_BUFFER_MS = 5000; // 与 page.tsx 中 SIGN_TIMESTAMP_BUFFER_MS 保持一致
+const SIGN_TIMESTAMP_BUFFER_MS = 2000; // 与 page.tsx 中 SIGN_TIMESTAMP_BUFFER_MS 保持一致
 const REQUEST_TIMEOUT_MS = 15000;
 
 // ── 参数解析 ────────────────────────────────────────────────
@@ -280,9 +280,9 @@ async function main() {
         if (directResult?.ERRCODE === "100") {
             console.log(`\n${YELLOW}诊断建议:${RESET}`);
             console.log("  ERRCODE=100 表示时间戳被 UCAS 拒绝。可能原因：");
-            console.log("  1. SIGN_TIMESTAMP_BUFFER_MS 不够大，需要增加缓冲");
+            console.log("  1. 时间戳过旧（缓冲过大）或偏未来（缓冲不够）");
             console.log("  2. UCAS 服务器间时钟偏差发生了变化");
-            console.log("  3. get_timestamp.do 与 stu_scan_sign.action 的时钟差变大");
+            console.log("  3. 尝试调整 SIGN_TIMESTAMP_BUFFER_MS（当前值见脚本顶部）");
         }
     } else {
         console.log(`${GREEN}签到功能正常 ✓${RESET}`);

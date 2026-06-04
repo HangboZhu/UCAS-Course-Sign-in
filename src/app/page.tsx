@@ -44,9 +44,10 @@ const REPO_STARS_CACHE_KEY = "ucas-repo-stars-cache-v1";
 const REPO_STARS_CACHE_TTL_MS = 1000 * 60 * 30;
 const AUTO_QR_TTL_MS = 5 * 1000;
 const DOWNLOAD_QR_TTL_MS = 10 * 1000;
-// UCAS 的 get_timestamp.do 与 stu_scan_sign.action 运行在不同服务器上，
-// 两者时钟偏差约 3.5s。校准对齐了 timestamp API，需要减去缓冲才能被 sign API 接受。
-const SIGN_TIMESTAMP_BUFFER_MS = 5 * 1000;
+// timestamp API 与 sign API 的时钟偏差不固定，缓冲不宜过大。
+// 过大（如 5s）会导致时间戳偏旧，被 sign API 以「签到码失效」拒绝；
+// 2s 可覆盖常见偏差，同时保持时间戳足够新鲜。
+const SIGN_TIMESTAMP_BUFFER_MS = 2 * 1000;
 
 const ACTION_STATUS_DEFAULT_TEXT = "生成签到码后，可在此查看下载、复制和点击签到的状态信息";
 const SIGN_BASE_URL = "https://iclass.ucas.edu.cn:8181/app/course/stu_scan_sign.action";
@@ -711,18 +712,9 @@ export default function Home() {
 		updateActionStatus("loading", "正在发起签到…");
 
 		try {
-			// 优先从当前二维码URL中提取时间戳，与扫码行为完全一致
-			let signTimestamp = 0;
-			try {
-				const url = new URL(signUrl);
-				const ts = url.searchParams.get("timestamp");
-				if (ts) signTimestamp = Number(ts);
-			} catch {}
-			// 降级：使用校准后的当前时间戳（减去缓冲）
-			if (!signTimestamp || !Number.isFinite(signTimestamp)) {
-				const offset = await getServerTimeOffset();
-				signTimestamp = Date.now() + offset - SIGN_TIMESTAMP_BUFFER_MS;
-			}
+			// 始终使用新鲜时间戳，避免 QR URL 中的旧时间戳导致签到码失效
+			const offset = await getServerTimeOffset();
+			const signTimestamp = Date.now() + offset - SIGN_TIMESTAMP_BUFFER_MS;
 
 			const res = await fetch("/api/course-uuid/sign", {
 				method: "POST",
