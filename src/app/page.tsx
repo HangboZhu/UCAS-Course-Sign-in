@@ -805,7 +805,7 @@ export default function Home() {
 							跳到主要内容
 						</a>
 						<div className="mt-4">
-							<h1 className="max-w-4xl font-[var(--font-serif)] text-3xl leading-tight font-semibold sm:text-5xl">
+							<h1 className="max-w-4xl font-sans text-3xl leading-tight font-bold sm:text-5xl text-[color:var(--accent)]">
 								UCAS Course Sign in
 							</h1>
 						</div>
@@ -897,7 +897,7 @@ export default function Home() {
 						>
 							<form onSubmit={onSubmit} className="panel rounded-2xl p-5 sm:p-6">
 								<div className="space-y-1">
-									<h2 className="font-[var(--font-serif)] text-2xl font-semibold">查询课程</h2>
+									<h2 className="font-sans text-2xl font-semibold">查询课程</h2>
 									<p className="text-xs tracking-[0.08em] uppercase text-[color:var(--green)]">
 										学号和密码仅用于本次查询，不会存储
 									</p>
@@ -963,7 +963,7 @@ export default function Home() {
 
 							<div className="panel rounded-2xl p-5 sm:p-6">
 								<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-									<h2 className="font-[var(--font-serif)] text-2xl font-semibold">选择课程</h2>
+									<h2 className="font-sans text-2xl font-semibold">选择课程</h2>
 									{hasCourses ? (
 										<input
 											className="focus-ring input-surface min-h-11 w-full rounded-xl border border-[color:var(--line)] px-4 py-2 text-sm md:w-auto md:min-w-[230px]"
@@ -1198,7 +1198,7 @@ export default function Home() {
 						>
 							<form onSubmit={onManualGenerate} className="panel rounded-2xl p-5 sm:p-6">
 								<div className="space-y-1">
-									<h2 className="font-[var(--font-serif)] text-2xl font-semibold">手动生成签到码</h2>
+									<h2 className="font-sans text-2xl font-semibold">手动生成签到码</h2>
 									<p className="text-xs tracking-[0.08em] uppercase text-[color:var(--green)]">
 										课程ID为7位纯数字，UUID为32位十六进制字符串
 									</p>
